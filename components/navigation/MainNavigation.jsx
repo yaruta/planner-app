@@ -1,6 +1,12 @@
+"use client";
 import Link from "next/link";
+import { signOut } from "firebase/auth";
+import { auth } from "@/firebase/config.js";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function MainNavigation() {
+  const [user] = useAuthState(auth);
+  console.log({ user });
   return (
     <nav>
       <ul>
@@ -15,6 +21,9 @@ export default function MainNavigation() {
         </li>
         <li>
           <Link href="/settings">Settings</Link>
+        </li>
+        <li>
+          <button onClick={() => signOut(auth)}>Log out</button>
         </li>
       </ul>
     </nav>
