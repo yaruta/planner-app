@@ -23,6 +23,7 @@ const AuthForm = ({ formType }) => {
         localStorage.setItem("user", true);
       } else {
         await createUserWithEmailAndPassword(email, password);
+        localStorage.setItem("user", true);
       }
       router.push("/");
     } catch (error) {
