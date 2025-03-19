@@ -20,6 +20,7 @@ const AuthForm = ({ formType }) => {
     try {
       if (formType === "login") {
         await signInWithEmailAndPassword(email, password);
+        localStorage.setItem("user", true);
       } else {
         await createUserWithEmailAndPassword(email, password);
       }

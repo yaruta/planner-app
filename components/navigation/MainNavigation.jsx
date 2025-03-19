@@ -1,29 +1,42 @@
-"use client";
 import Link from "next/link";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/config.js";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function MainNavigation() {
-  const [user] = useAuthState(auth);
-  console.log({ user });
   return (
     <nav>
-      <ul>
+      <ul className="space-y-2">
         <li>
-          <Link href="/auth">Auth</Link>
+          <Link
+            href="/dashboard"
+            className="block p-2 hover:bg-gray-200 rounded"
+          >
+            Dashboard
+          </Link>
         </li>
         <li>
-          <Link href="/dashboard">Dashboard</Link>
+          <Link href="/tasks" className="block p-2 hover:bg-gray-200 rounded">
+            Tasks
+          </Link>
         </li>
         <li>
-          <Link href="/tasks">Tasks</Link>
+          <Link
+            href="/settings"
+            className="block p-2 hover:bg-gray-200 rounded"
+          >
+            Settings
+          </Link>
         </li>
         <li>
-          <Link href="/settings">Settings</Link>
-        </li>
-        <li>
-          <button onClick={() => signOut(auth)}>Log out</button>
+          <button
+            onClick={() => {
+              signOut(auth);
+              localStorage.removeItem("user");
+            }}
+            className="block p-2 hover:bg-gray-200 rounded w-full text-left"
+          >
+            Log out
+          </button>
         </li>
       </ul>
     </nav>
