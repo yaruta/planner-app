@@ -5,7 +5,8 @@ import {
   useSignInWithEmailAndPassword,
 } from "react-firebase-hooks/auth";
 import { auth } from "@/firebase/config.js";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 const AuthForm = ({ formType }) => {
   const [email, setEmail] = useState("");
@@ -13,7 +14,10 @@ const AuthForm = ({ formType }) => {
   const [createUserWithEmailAndPassword] =
     useCreateUserWithEmailAndPassword(auth);
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+
   const router = useRouter();
+  const pathname = usePathname();
+  const isLogin = pathname === "/auth/login";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -25,7 +29,7 @@ const AuthForm = ({ formType }) => {
       } else {
         res = await createUserWithEmailAndPassword(email, password);
       }
-    //   console.log({ res });
+      //   console.log({ res });
       localStorage.setItem("user", true);
       setEmail("");
       setPassword("");
@@ -70,6 +74,22 @@ const AuthForm = ({ formType }) => {
         >
           {formType === "login" ? "Sign In" : "Sign Up"}
         </button>
+        {isLogin && (
+          <p className="text-xs pt-4 text-center">
+            Don't have an account{" "}
+            <Link href="/auth/register" className="text-blue-800">
+              Signup
+            </Link>
+          </p>
+        )}
+        {!isLogin && (
+          <p className="text-xs pt-4 text-center">
+            Already have an account{" "}
+            <Link href="/auth/login" className="text-blue-800">
+              Login
+            </Link>
+          </p>
+        )}
       </form>
     </div>
   );
