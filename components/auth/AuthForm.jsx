@@ -18,17 +18,13 @@ const AuthForm = ({ formType }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      let res;
       if (formType === "login") {
-        res = await signInWithEmailAndPassword(email, password);
-        console.log({ res });
+        await signInWithEmailAndPassword(email, password);
+        localStorage.setItem("user", true);
       } else {
-        res = await createUserWithEmailAndPassword(email, password);
+        await createUserWithEmailAndPassword(email, password);
+        localStorage.setItem("user", true);
       }
-    //   console.log({ res });
-      localStorage.setItem("user", true);
-      setEmail("");
-      setPassword("");
       router.push("/");
     } catch (error) {
       console.error(error);
