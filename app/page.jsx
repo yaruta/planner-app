@@ -5,18 +5,19 @@ import { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function Home() {
-  const [user] = useAuthState(auth);
+  const [user, loading] = useAuthState(auth);
   const router = useRouter();
 
   useEffect(() => {
+    // Warten auf die Authentifizierung
+    if (loading) return; // Wenn noch geprüft wird, nichts tun
+
     if (!user && !localStorage.getItem("user")) {
       router.push("/auth/login");
+    } else {
+      router.replace("/dashboard");
     }
-  }, [user]);
+  }, [user, loading, router]);
 
-  return (
-    <main>
-      <h1>Planner App</h1>
-    </main>
-  );
+  return <></>;
 }

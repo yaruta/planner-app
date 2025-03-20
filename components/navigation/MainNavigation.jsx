@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/config.js";
+import { redirect } from "next/navigation";
 
 export default function MainNavigation() {
   return (
@@ -32,6 +34,7 @@ export default function MainNavigation() {
             onClick={() => {
               signOut(auth);
               localStorage.removeItem("user");
+              redirect("/auth/login");
             }}
             className="block p-2 hover:bg-gray-200 rounded w-full text-left"
           >

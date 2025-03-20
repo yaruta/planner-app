@@ -29,7 +29,7 @@ const AuthForm = ({ formType }) => {
       localStorage.setItem("user", true);
       setEmail("");
       setPassword("");
-      router.push("/");
+      router.push("/dashboard");
     } catch (error) {
       console.error(error);
     }

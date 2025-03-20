@@ -1,9 +1,10 @@
 import AuthForm from "@/components/auth/AuthForm";
+import AuthLayout from "@/components/auth/AuthLayout";
 
 export default function RegisterPage() {
   return (
-    <section>
+    <AuthLayout>
       <AuthForm formType="register" />
-    </section>
+    </AuthLayout>
   );
 }

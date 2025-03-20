@@ -1,18 +1,12 @@
-import Link from "next/link";
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AuthPage() {
-  return (
-    <main>
-      <nav>
-        <ul>
-          <li>
-            <Link href="/auth/login">Login</Link>
-          </li>
-          <li>
-            <Link href="/auth/register">Register</Link>
-          </li>
-        </ul>
-      </nav>
-    </main>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push("/auth/login");
+  }, []);
+  
 }
