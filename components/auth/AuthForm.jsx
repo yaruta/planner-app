@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useCreateUserWithEmailAndPassword,
   useSignInWithEmailAndPassword,
@@ -7,13 +7,21 @@ import {
 import { auth } from "@/firebase/config.js";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { getAuthErrorMessage, isPasswordValid } from "@/utils/authErrors";
 
 const AuthForm = ({ formType }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [createUserWithEmailAndPassword] =
-    useCreateUserWithEmailAndPassword(auth);
-  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [
+    createUserWithEmailAndPassword,
+    userRegister,
+    loadingRegister,
+    errorRegister,
+  ] = useCreateUserWithEmailAndPassword(auth);
+  const [signInWithEmailAndPassword, userLogin, loadingLogin, errorLogin] =
+    useSignInWithEmailAndPassword(auth);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -21,22 +29,56 @@ const AuthForm = ({ formType }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      let res;
-      if (formType === "login") {
-        res = await signInWithEmailAndPassword(email, password);
-        console.log({ res });
-      } else {
-        res = await createUserWithEmailAndPassword(email, password);
-      }
-      //   console.log({ res });
+    setErrorMessage("");
+
+    if (!isPasswordValid(password)) {
+      setErrorMessage(
+        "Password must be at least 8 characters long, include a number and a special character."
+      );
+      return;
+    }
+
+    let res;
+    if (formType === "login") {
+      res = await signInWithEmailAndPassword(email, password);
+    } else {
+      res = await createUserWithEmailAndPassword(email, password);
+    }
+
+    if (res?.user) {
       localStorage.setItem("user", true);
       setEmail("");
       setPassword("");
       router.push("/dashboard");
-    } catch (error) {
-      console.error(error);
     }
+  };
+
+  useEffect(() => {
+    const error = errorLogin || errorRegister;
+    if (error) {
+      setErrorMessage(getAuthErrorMessage(error.code));
+    }
+  }, [errorLogin, errorRegister]);
+
+  const renderFormLinks = () => {
+    if (isLogin) {
+      return (
+        <p className="text-xs pt-4 text-center">
+          Don't have an account{" "}
+          <Link href="/auth/register" className="text-blue-800">
+            Sign up
+          </Link>
+        </p>
+      );
+    }
+    return (
+      <p className="text-xs pt-4 text-center">
+        Already have an account{" "}
+        <Link href="/auth/login" className="text-blue-800">
+          Login
+        </Link>
+      </p>
+    );
   };
 
   return (
@@ -68,28 +110,17 @@ const AuthForm = ({ formType }) => {
             required
           />
         </div>
+        {errorMessage !== "" && (
+          <p className="text-red-500 text-xs mb-2">{errorMessage}</p>
+        )}
         <button
           type="submit"
+          disabled={loadingLogin || loadingRegister}
           className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
         >
           {formType === "login" ? "Sign In" : "Sign Up"}
         </button>
-        {isLogin && (
-          <p className="text-xs pt-4 text-center">
-            Don't have an account{" "}
-            <Link href="/auth/register" className="text-blue-800">
-              Signup
-            </Link>
-          </p>
-        )}
-        {!isLogin && (
-          <p className="text-xs pt-4 text-center">
-            Already have an account{" "}
-            <Link href="/auth/login" className="text-blue-800">
-              Login
-            </Link>
-          </p>
-        )}
+        {renderFormLinks()}
       </form>
     </div>
   );
