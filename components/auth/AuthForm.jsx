@@ -63,7 +63,7 @@ const AuthForm = ({ formType }) => {
   const renderFormLinks = () => {
     if (isLogin) {
       return (
-        <p className="text-xs pt-4 text-center">
+        <p className="text-xs pt-2 text-center">
           Don't have an account{" "}
           <Link href="/auth/register" className="text-blue-800">
             Sign up
@@ -112,6 +112,14 @@ const AuthForm = ({ formType }) => {
         </div>
         {errorMessage !== "" && (
           <p className="text-red-500 text-xs mb-2">{errorMessage}</p>
+        )}
+        {isLogin && (
+          <Link
+            href="/auth/forgot-password"
+            className="text-xs text-blue-800 pb-2"
+          >
+            Forgot your password?
+          </Link>
         )}
         <button
           type="submit"
